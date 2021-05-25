@@ -1,0 +1,29 @@
+{
+    "name": "plokko/table-helper",
+    "description": "",
+    "keywords": [
+        "laravel",
+        "table",
+        "helper",
+        "resource-query",
+        "filter",
+        "paginate"
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "*",
+        "illuminate/support": ">=5.4.0",
+        "plokko/resource-query": "^0.2.1",
+    },
+    "require-dev": {},
+    "authors": [
+        {
+            "name": "Francesco Pellerone"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "plokko\\TableHelper\\": "src"
+        }
+    }
+}
