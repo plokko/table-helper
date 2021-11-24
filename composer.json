@@ -13,7 +13,7 @@
         "php": ">=7.2",
         "ext-json": "*",
         "illuminate/support": ">=5.4.0",
-        "plokko/resource-query": "^0.2.1|dev-master"
+        "plokko/resource-query": "^0.2.3|dev-master"
     },
     "require-dev": {},
     "authors": [
@@ -24,6 +24,13 @@
     "autoload": {
         "psr-4": {
             "plokko\\TableHelper\\": "src"
+        }
+    },
+    "extra":{
+        "laravel":{
+            "providers":[
+                "plokko\\TableHelper\\TableHelperServiceProvider"
+            ]
         }
     }
 }
