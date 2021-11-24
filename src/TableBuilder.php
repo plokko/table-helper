@@ -156,11 +156,20 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
      * @return array
      */
     public function getHeaders():array{
+        $labels = null;
+        if($this->baseLangFile){
+            $labels = trans($this->baseLangFile);
+            if(!is_array($labels))
+                $labels = null;
+        }
         $headers = [];
         foreach($this->columns AS $column){
             /**@var TableColumnBuilder $column **/
             if($column->visible){
-                $headers[]= $column->toHeader();
+                $opt = [];
+                if(!empty($labels[$column->name]))
+                    $opt['label'] = $labels[$column->name];//From global trans
+                $headers[]= $column->toHeader($opt);
             }
         }
         return $headers;

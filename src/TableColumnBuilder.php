@@ -241,9 +241,9 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         }
     }
 
-    function toHeader(){
+    function toHeader(array $opt=[]){
         $headers = array_merge($this->attr,[
-                'text'=>$this->label?: $this->name,
+                'text'=>$this->label?: (empty($opt['label'])?$this->name:$opt['label']),
                 'value'=>$this->name, //or 'field'=>$this->field, ?
                 'filterable'=>$this->filterable,
                 'sortable'=>$this->sortable,
