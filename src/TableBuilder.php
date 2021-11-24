@@ -23,8 +23,6 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
         $select = null,
         /** @var string form action */
         $action = '',
-        /** @var string form method */
-        $method = 'post',
         /** @var boolean */
         $autoSelect = true;
 
@@ -122,11 +120,9 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
         return $this->toResourceQuery()->toArray();
     }
 
-    public function formAction($action, $method = null)
+    public function formAction($action)
     {
         $this->action = $action;
-        if ($method !== null)
-            $this->method = $method;
         return $this;
     }
 
@@ -162,6 +158,7 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
     public function getHeaders():array{
         $headers = [];
         foreach($this->columns AS $column){
+            /**@var TableColumnBuilder $column **/
             if($column->visible){
                 $headers[]= $column->toHeader();
             }

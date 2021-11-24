@@ -62,7 +62,7 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
             $this->sort = null;
         }else{
             $this->sort = [
-                'field' => $field,
+                'field' => $field===true?$this->name:$field,
                 'reverse' => $reverse,
             ];
         }
@@ -114,7 +114,7 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         if($k==='filterable')
             return !!$this->filter;
         if(in_array($k,['label','name','field','visible']))
-            return $this->k;
+            return $this->$k;
     }
     function __set($k,$v){
         if(in_array($k,['label','field','visible']))
@@ -187,12 +187,11 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
     /**
      * Set form action and method
      * @param string $action
-     * @param string|null $method
      * @return $this
      */
-    public function formAction($action, $method = null)
+    public function formAction($action)
     {
-        $this->parent->formAction($action, $method);
+        $this->parent->formAction($action);
         return $this;
     }
 
@@ -234,7 +233,7 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
             $query->filter($this->name,$cnd,$field);
         }
         if($this->sort){
-            $field = $this->sort['field']?? $_field;
+            $field = $this->sort['field']?: $_field;
             $reverse = $this->sort['reverse'];
             $query
                 ->orderBy($this->name,$field)

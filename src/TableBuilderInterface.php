@@ -29,10 +29,9 @@ interface TableBuilderInterface
     /**
      * Set form action and method
      * @param string $action
-     * @param string|null $method
      * @return TableBuilderInterface
      */
-    public function formAction($action,$method=null);
+    public function formAction($action);
 
     /**
      * Set auto field selection on or off on the form
