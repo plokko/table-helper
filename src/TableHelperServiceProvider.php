@@ -16,8 +16,6 @@ class TableHelperServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'courier');
-        dd(__DIR__.'/../resources/views');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'table-helper');
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/table-helper'),
