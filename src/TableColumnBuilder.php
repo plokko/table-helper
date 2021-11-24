@@ -13,6 +13,8 @@ use plokko\ResourceQuery\ResourceQuery;
  * @property $label
  * @property $field
  * @property $visible
+ * @property $type
+ * @property $component
  */
 class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\Support\Arrayable,JsonSerializable,Responsable
 {
@@ -92,6 +94,23 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $this;
     }
 
+    /**
+     * @param string|null $type
+     * @return $this
+     */
+    function type($type){
+        $this->attr['type'] = $type;
+        return $this;
+    }
+    /**
+     * @param string|null $component
+     * @return $this
+     */
+    function component($component){
+        $this->attr['component'] = $component;
+        return $this;
+    }
+
     function virtual($virtual=true){
         $this->virtual = $virtual;
         return $this;
@@ -115,10 +134,14 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
             return !!$this->filter;
         if(in_array($k,['label','name','field','visible']))
             return $this->$k;
+        if(in_array($k,['type','component']))
+            return $this->attr[$k];
     }
     function __set($k,$v){
         if(in_array($k,['label','field','visible']))
             $this->$k($v);
+        if(in_array($k,['type','component']))
+            $this->attr[$k] = $v;
     }
 
     function getSelectedField(){
