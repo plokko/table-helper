@@ -61,7 +61,8 @@ class TableHelperServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            TableHelper::class,
+            TableBuilder::class,
+            //TableHelper::class,
         ];
     }
 }

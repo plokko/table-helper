@@ -1,7 +1,3 @@
-<data-table
-        :headers="{{json_encode($headers)}}"
-        action="{{$action}}"
-
->
+<data-table {{ $table->renderAttr() }} >
+    {{ $table->renderBody() }}
 </data-table>
-<pre>{{json_encode($headers,JSON_PRETTY_PRINT)}}</pre>

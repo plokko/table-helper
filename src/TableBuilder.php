@@ -7,6 +7,7 @@ use plokko\ResourceQuery\ResourceQuery;
 use JsonSerializable;
 use Illuminate\Contracts\Support\Responsable;
 use plokko\ResourceQuery\ResourceQueryBuilder;
+use Illuminate\Support\HtmlString;
 
 class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Support\Arrayable, JsonSerializable, Responsable
 {
@@ -84,23 +85,26 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
 
     public function toResourceQuery($request = null): ResourceQuery
     {
-        if ($this->query instanceof \plokko\ResourceQuery\ResourceQuery)
-            return $this->query;
-        $query = $this->query->clone();
-        //SELECT FIELDS
-        if ($this->select) {
-            $query->select($this->select);
-        } elseif ($this->autoSelect) {
-            $query->select($this->getSelectedFields());
+        if ($this->query instanceof \plokko\ResourceQuery\ResourceQuery) {
+            $query = $this->query->clone();
+        }else{
+            $q = $this->query->clone();
+            //SELECT FIELDS
+            if ($this->select) {
+                $q->select($this->select);
+            } elseif ($this->autoSelect) {
+                $q->select($this->getSelectedFields());
+            }
+
+            $query = new ResourceQueryBuilder($q, $request);
+
+            foreach ($this->columns as $name => $column) {
+                $column->__apply($query);
+            }
         }
-
-        $rq = new ResourceQueryBuilder($query, $request);
-
-        foreach ($this->columns as $name => $column) {
-            $column->__apply($rq);
-        }
-
-        return $rq;
+        if($this->defaultSortBy)
+            $query->setDefaultOrder($this->defaultSortBy);
+        return $query;
     }
 
     protected function getSelectedFields()
@@ -180,9 +184,21 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
      */
     public function render(){
         return view('table-helper::table',[
-            'headers' => $this->getHeaders(),
-            'action' => $this->action,
-            'method' => $this->method,
+            'table' => $this,
         ]);
+    }
+
+    public function renderAttr(){
+        return new HtmlString(' :headers="'.e(json_encode($this->getHeaders())).'" action="'.e($this->action).'" ');
+    }
+    public function renderBody(){
+        $content = '';
+        foreach($this->columns AS $column){
+            /**@var TableColumnBuilder $column **/
+            $r = $column->_render();
+            if($r)
+                $content.=$r;
+        }
+        return new HtmlString($content);
     }
 }

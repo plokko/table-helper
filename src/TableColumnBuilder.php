@@ -2,6 +2,8 @@
 namespace plokko\TableHelper;
 
 use DB;
+use Illuminate\Support\HtmlString;
+use Illuminate\View\View;
 use JsonSerializable;
 use Illuminate\Contracts\Support\Responsable;
 use plokko\ResourceQuery\ResourceQuery;
@@ -31,7 +33,8 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
 
         $filter=null,
         $sort=null,
-        $attr=[];
+        $attr=[],
+        $view=null;
 
     function __construct(TableBuilder $parent,$name)
     {
@@ -94,21 +97,48 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $this;
     }
 
+    function attr($key,$value){
+        if($value===null)
+            unset($this->attr[$key]);
+        else
+            $this->attr[$key] = $value;
+        return $this;
+    }
+
     /**
      * @param string|null $type
      * @return $this
      */
     function type($type){
-        $this->attr['type'] = $type;
-        return $this;
+        return $this->attr('type',$type);
+    }
+    /**
+     * @param string|null $align
+     * @return $this
+     */
+    function align($align){
+        return $this->attr('align',$align);
     }
     /**
      * @param string|null $component
      * @return $this
      */
     function component($component){
-        $this->attr['component'] = $component;
-        return $this;
+        return $this->attr('component',$component);
+    }
+    /**
+     * @param string|null $class
+     * @return $this
+     */
+    function rowClass($class){
+        return $this->attr('class',$class);
+    }
+    /**
+     * @param string|null $class
+     * @return $this
+     */
+    function cellClass($class){
+        return $this->attr('cellClass',$class);
     }
 
     function virtual($virtual=true){
@@ -206,6 +236,15 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $this;
     }
 
+    /**
+     * @param null|string|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|Closure $view
+     * @return $this
+     */
+    public function columnView($view){
+        $this->view = $view;
+        return $this;
+    }
+
 
     /**
      * Set form action and method
@@ -288,4 +327,15 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $headers;
     }
 
+    /**
+     * @private
+     * @return null|string|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
+     */
+    function _render(){
+        $v = ($this->view && $this->view instanceof Closure)? $this->view($this):$this->view;
+
+        return ($v)?
+                new HtmlString('<template v-slot:item.'.$this->name.'="{item}">'.$v.'</template>'):
+                null;
+    }
 }
