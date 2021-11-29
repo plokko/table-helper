@@ -1,6 +1,5 @@
 <?php
-
-namespace Plokko\TableHelper;
+namespace plokko\TableHelper;
 
 use plokko\ResourceQuery\ResourceQuery;
 

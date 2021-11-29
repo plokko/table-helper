@@ -7,6 +7,6 @@ class TableHelper extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \Plokko\TableHelper\TableHelper::class;
+        return \plokko\TableHelper\TableHelper::class;
     }
 }
