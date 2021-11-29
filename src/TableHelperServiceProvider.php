@@ -43,12 +43,12 @@ class TableHelperServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/config.php', 'table-helper'
         );
-        /*
         // Facade accessor
-        $this->app->bind(LocaleManager::class, function($app) {
-            return new LocaleManager();
+        $this->app->bind(TableHelper::class, function($app) {
+            return new TableHelper();
         });
 
+        /*
         ///Blade directive
         Blade::directive('locales', function ($locale=null) {
             $lm = \App::make(LocaleManager::class);
@@ -62,7 +62,7 @@ class TableHelperServiceProvider extends ServiceProvider
     {
         return [
             TableBuilder::class,
-            //TableHelper::class,
+            TableHelper::class,
         ];
     }
 }

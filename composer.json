@@ -30,7 +30,10 @@
         "laravel":{
             "providers":[
                 "plokko\\TableHelper\\TableHelperServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "TableHelper": "plokko\\TableHelper\\Facades\\TableHelper"
+            }
         }
     }
 }
