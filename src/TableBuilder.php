@@ -180,10 +180,10 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Htmlable|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function render(){
-        return view('table-helper::table',[
+        return view(config('table-helper.base-view'),[
             'table' => $this,
         ]);
     }

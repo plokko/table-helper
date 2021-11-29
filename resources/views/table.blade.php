@@ -1,3 +1,3 @@
-<data-table {{ $table->renderAttr() }} >
+<{{config('table-helper.base-component')}} {{ $table->renderAttr() }} >
     {{ $table->renderBody() }}
-</data-table>
+</{{config('table-helper.base-component')}}>

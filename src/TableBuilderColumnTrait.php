@@ -1,0 +1,103 @@
+<?php
+namespace plokko\TableHelper;
+
+use Illuminate\Contracts\Support\Htmlable;
+use plokko\ResourceQuery\ResourceQuery;
+
+trait TableBuilderColumnTrait
+{
+    /**
+     * @var TableBuilder $parent
+     */
+
+    /**
+     * @param string $name
+     * @return TableColumnBuilder
+     */
+    public function column($name):TableColumnBuilder
+    {
+        return $this->parent->column($name);
+    }
+
+    /**
+     * @param string $name
+     * @return TableBuilder
+     */
+    public function removeColumn($name):TableBuilder
+    {
+        return $this->parent->removeColumn($name);
+    }
+
+    public function setDefaultSortBy($attr)
+    {
+        $this->parent->setDefaultSortBy($attr);
+        return $this;
+    }
+
+    public function setBaseLangFile($attr)
+    {
+        $this->parent->setBaseLangFile($attr);
+        return $this;
+    }
+
+    public function selectFields(array $fields)
+    {
+        $this->parent->selectFields($fields);
+        return $this;
+    }
+
+    public function formAction($action)
+    {
+        $this->parent->formAction($action);
+        return $this;
+    }
+
+    public function autoSelect($enabled)
+    {
+        $this->parent->autoSelect($enabled);
+        return $this;
+    }
+
+    public function toResponse($request)
+    {
+        return $this->parent->toResponse($request);
+    }
+
+    public function render()
+    {
+        return $this->parent->render();
+    }
+
+    public function renderAttr()
+    {
+        return $this->parent->renderAttr();
+    }
+
+    public function renderBody()
+    {
+        return $this->parent->renderBody();
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->parent->getHeaders();
+    }
+
+    public function toResourceQuery($request = null): ResourceQuery{
+        return $this->parent->toResourceQuery($request);
+    }
+
+    public function toArray()
+    {
+        return $this->parent->toArray();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->parent->jsonSerialize();
+    }
+
+    public function __toString(){
+        return json_encode($this);
+    }
+}

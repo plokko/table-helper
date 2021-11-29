@@ -1,6 +1,9 @@
 <?php
 namespace plokko\TableHelper;
 
+use Illuminate\Contracts\Support\Htmlable;
+use plokko\ResourceQuery\ResourceQuery;
+
 interface TableBuilderInterface
 {
     /**
@@ -39,4 +42,28 @@ interface TableBuilderInterface
      * @return TableBuilderInterface
      */
     public function autoSelect($enabled);
+
+    /**
+     * Returns the table
+     * @return string|Htmlable|\Illuminate\Contracts\View\View
+     */
+    public function render();
+    /**
+     * Returns the table attributes
+     * @return string|Htmlable
+     */
+    public function renderAttr();
+    /**
+     * Returns the table body
+     * @return string|Htmlable
+     */
+    public function renderBody();
+
+    /**
+     * Returns table headers
+     * @return array
+     */
+    public function getHeaders():array;
+
+    public function toResourceQuery($request = null): ResourceQuery;
 }

@@ -19,7 +19,7 @@ class TableHelperServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'table-helper');
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/table-helper'),
-            //__DIR__.'/../config/config.php' => config_path('table-helper.php'),
+            __DIR__.'/../config/config.php' => config_path('table-helper.php'),
         ]);
 
         /*//--- Console commands ---///
@@ -39,11 +39,11 @@ class TableHelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /*// Merge default config ///
+        // Merge default config ///
         $this->mergeConfigFrom(
             __DIR__.'/../config/config.php', 'table-helper'
         );
-
+        /*
         // Facade accessor
         $this->app->bind(LocaleManager::class, function($app) {
             return new LocaleManager();

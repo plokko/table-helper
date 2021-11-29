@@ -2,6 +2,7 @@
 namespace plokko\TableHelper;
 
 use DB;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use JsonSerializable;
@@ -20,6 +21,7 @@ use plokko\ResourceQuery\ResourceQuery;
  */
 class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\Support\Arrayable,JsonSerializable,Responsable
 {
+    use TableBuilderColumnTrait;
     /**
      * @var TableBuilder
      */
@@ -52,17 +54,38 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         $this->label = $label;
         return $this;
     }
+
+    /**
+     * @param string|null|\Illuminate\Database\Query\Expression $field
+     * @return $this
+     */
     public function field($field){
         $this->field = $field;
         return $this;
     }
 
     /**
-     * @param boolean|string|\Illuminate\Database\Query\Expression $field
+     * @param string|null $type
+     * @return $this
+     */
+    function type($type){
+        return $this->attr('type',$type);
+    }
+
+    /**
+     * @param string|null $align
+     * @return $this
+     */
+    function align($align){
+        return $this->attr('align',$align);
+    }
+
+    /**
+     * @param boolean|null|string|\Illuminate\Database\Query\Expression $field
      * @param boolean $reverse
      * @return $this
      */
-    public function sort($field,$reverse=false){
+    public function sort($field=true,$reverse=false){
         if($field === false || $field === null){
             $this->sort = null;
         }else{
@@ -77,7 +100,7 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
     /**
      * Enable filtering for this column
      * @param string|boolean|Closure $condition
-     * @param null|\Illuminate\Database\Query\Expression $field
+     * @param null|string|\Illuminate\Database\Query\Expression $field
      * @return $this
      */
     function filter($condition='=',$field=null){
@@ -92,11 +115,20 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $this;
     }
 
+    /**
+     * @param array $attributes
+     * @return $this
+     */
     function setAttrs(array $attributes){
         $this->attr = $attributes;
         return $this;
     }
 
+    /**
+     * @param string $key
+     * @param null|mixed $value
+     * @return $this
+     */
     function attr($key,$value){
         if($value===null)
             unset($this->attr[$key]);
@@ -106,26 +138,13 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
     }
 
     /**
-     * @param string|null $type
-     * @return $this
-     */
-    function type($type){
-        return $this->attr('type',$type);
-    }
-    /**
-     * @param string|null $align
-     * @return $this
-     */
-    function align($align){
-        return $this->attr('align',$align);
-    }
-    /**
      * @param string|null $component
      * @return $this
      */
     function component($component){
         return $this->attr('component',$component);
     }
+
     /**
      * @param string|null $class
      * @return $this
@@ -133,17 +152,13 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
     function rowClass($class){
         return $this->attr('class',$class);
     }
+
     /**
      * @param string|null $class
      * @return $this
      */
     function cellClass($class){
         return $this->attr('cellClass',$class);
-    }
-
-    function virtual($virtual=true){
-        $this->virtual = $virtual;
-        return $this;
     }
 
     /**
@@ -156,6 +171,27 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         return $this;
     }
 
+    /**
+     * Sets the column as virtual (no corresponding table field, ex. table actions)
+     * @param boolean $virtual
+     * @return $this
+     */
+    function virtual($virtual=true){
+        $this->virtual = $virtual;
+        return $this;
+    }
+
+    /**
+     * Set column view
+     * @param null|string|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|Closure $view
+     * @return $this
+     */
+    public function columnView($view){
+        $this->view = $view;
+        return $this;
+    }
+
+
     /// Getter and setter
     function __get($k){
         if($k==='sortable')
@@ -167,6 +203,7 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
         if(in_array($k,['type','component']))
             return $this->attr[$k];
     }
+
     function __set($k,$v){
         if(in_array($k,['label','field','visible']))
             $this->$k($v);
@@ -190,96 +227,6 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
             return $this->field;
         }
         return $this->name;//Default select 'name' as field (ex. column "name" select: "name")
-    }
-
-    public function toArray()
-    {
-        $data = [];//TODO
-        return $data;
-    }
-
-    /// Execute from parent
-
-    /**
-     * @param string $name
-     * @return TableColumnBuilder
-     */
-    public function column($name):TableColumnBuilder
-    {
-        return $this->parent->column($name);
-    }
-
-    /**
-     * @param string $name
-     * @return TableBuilder
-     */
-    public function removeColumn($name):TableBuilder
-    {
-        return $this->parent->removeColumn($name);
-    }
-
-    public function setDefaultSortBy($attr)
-    {
-        $this->parent->setDefaultSortBy($attr);
-        return $this;
-    }
-
-    public function setBaseLangFile($attr)
-    {
-        $this->parent->setBaseLangFile($attr);
-        return $this;
-    }
-
-    public function selectFields(array $fields)
-    {
-        $this->parent->selectFields($fields);
-        return $this;
-    }
-
-    /**
-     * @param null|string|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|Closure $view
-     * @return $this
-     */
-    public function columnView($view){
-        $this->view = $view;
-        return $this;
-    }
-
-
-    /**
-     * Set form action and method
-     * @param string $action
-     * @return $this
-     */
-    public function formAction($action)
-    {
-        $this->parent->formAction($action);
-        return $this;
-    }
-
-    /**
-     * Set auto field selection on or off on the form
-     * @param boolean $enabled
-     * @return $this
-     */
-    public function autoSelect($enabled)
-    {
-        $this->parent->autoSelect($enabled);
-        return $this;
-    }
-
-    public function __toString(){
-        return json_encode($this);
-    }
-
-    public function jsonSerialize()
-    {
-        return $this->parent->jsonSerialize();
-    }
-
-    public function toResponse($request)
-    {
-        return $this->parent->toResponse($request);
     }
 
     /**
@@ -332,10 +279,11 @@ class TableColumnBuilder implements TableBuilderInterface,\Illuminate\Contracts\
      * @return null|string|\Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
      */
     function _render(){
-        $v = ($this->view && $this->view instanceof Closure)? $this->view($this):$this->view;
+        $v = ($this->view && $this->view instanceof \Closure)? $this->view($this):$this->view;
 
         return ($v)?
                 new HtmlString('<template v-slot:item.'.$this->name.'="{item}">'.$v.'</template>'):
                 null;
     }
+
 }
