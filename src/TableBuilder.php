@@ -16,6 +16,8 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
         $query,
         /** @var TableColumnBuilder[] */
         $columns = [],
+        /** @var TableFilterCondition[] */
+        $filters = [],
         /** @var array|null */
         $defaultSortBy = null,
         /** @var string|null */
@@ -97,11 +99,16 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
             }
 
             $query = new ResourceQueryBuilder($q, $request);
-
-            foreach ($this->columns as $name => $column) {
-                $column->__apply($query);
-            }
         }
+        foreach ($this->columns as $name => $column) {
+            $column->__apply($query);
+        }
+        foreach ($this->filters AS $filter){
+            /** @var TableFilterCondition $filter */
+            $filter->_applyToResourceQuery($query);
+        }
+
+
         if($this->defaultSortBy)
             $query->setDefaultOrder($this->defaultSortBy);
         return $query;
@@ -200,5 +207,34 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
                 $content.=$r;
         }
         return new HtmlString($content);
+    }
+
+    /**
+     * @param string $name
+     * @param $condition
+     * @param $field
+     * @return TableFilterCondition
+     */
+    function addFilter($name, $condition = null, $field = null): TableFilterCondition
+    {
+        if(!isset($this->filters[$name])){
+            $this->filters[$name] = new TableFilterCondition($this,$name, $condition = null, $field = null);
+        }
+        if ($condition)
+            $this->filters[$name]->condition($condition);
+        if ($field)
+            $this->filters[$name]->field($field);
+        return $this->filters[$name];
+    }
+
+    /**
+     * Remove a filter by name
+     * @param string $name Filter name
+     * @return $this
+     */
+    function removeFilter($name):TableBuilder
+    {
+        unset($this->filters[$name]);
+        return $this;
     }
 }

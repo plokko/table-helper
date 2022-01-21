@@ -100,4 +100,23 @@ trait TableBuilderColumnTrait
     public function __toString(){
         return json_encode($this);
     }
+    /**
+     * Add a new filter or update an existing one
+     * @param string $name
+     * @param callable|string $condition
+     * @param null $field
+     * @return FilterCondition
+     */
+    function addFilter($name, $condition = null, $field = null): TableFilterCondition{
+        return $this->parent->addFilter($name, $condition, $field );
+    }
+
+    /**
+     * Remove a filter by name
+     * @param string $name Filter name
+     * @return $this
+     */
+    function removeFilter($name):TableBuilder{
+        return $this->parent->removeFilter($name);
+    }
 }

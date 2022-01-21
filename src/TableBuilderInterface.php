@@ -18,7 +18,7 @@ interface TableBuilderInterface
      * @return TableColumnBuilder
      */
     public function removeColumn($name):TableBuilder;
-    
+
     public function setDefaultSortBy($attr);
     public function setBaseLangFile($attr);
 
@@ -66,4 +66,20 @@ interface TableBuilderInterface
     public function getHeaders():array;
 
     public function toResourceQuery($request = null): ResourceQuery;
+
+    /**
+     * Add a new filter or update an existing one
+     * @param string $name
+     * @param callable|string $condition
+     * @param null $field
+     * @return FilterCondition
+     */
+    function addFilter($name, $condition = null, $field = null):TableFilterCondition;
+
+    /**
+     * Remove a filter by name
+     * @param string $name Filter name
+     * @return $this
+     */
+    function removeFilter($name):TableBuilder;
 }
