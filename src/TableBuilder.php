@@ -218,12 +218,13 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
     function addFilter($name, $condition = null, $field = null): TableFilterCondition
     {
         if(!isset($this->filters[$name])){
-            $this->filters[$name] = new TableFilterCondition($this,$name, $condition = null, $field = null);
+            $this->filters[$name] = new TableFilterCondition($this,$name,$field);
         }
         if ($condition)
             $this->filters[$name]->condition($condition);
         if ($field)
             $this->filters[$name]->field($field);
+
         return $this->filters[$name];
     }
 
