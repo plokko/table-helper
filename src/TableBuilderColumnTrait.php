@@ -119,4 +119,15 @@ trait TableBuilderColumnTrait
     function removeFilter($name):TableBuilder{
         return $this->parent->removeFilter($name);
     }
+    
+    /**
+     * Remove a filter by name
+     * @param string $name Filter name
+     * @return $this
+     */
+    function useResource($name)
+    {
+        $this->parent->useResource($name);
+        return $this;
+    }
 }

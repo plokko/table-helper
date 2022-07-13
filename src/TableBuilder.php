@@ -27,7 +27,9 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
         /** @var string form action */
         $action = '',
         /** @var boolean */
-        $autoSelect = true;
+        $autoSelect = true,
+        /**@var string|null */
+        $useResource = null;
 
     /**
      * TableHelper constructor.
@@ -111,6 +113,10 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
 
         if($this->defaultSortBy)
             $query->setDefaultOrder($this->defaultSortBy);
+
+        if($this->useResource)
+            $query->useResource($this->useResource);
+
         return $query;
     }
 
@@ -236,6 +242,17 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
     function removeFilter($name):TableBuilder
     {
         unset($this->filters[$name]);
+        return $this;
+    }
+
+    /**
+     * Remove a filter by name
+     * @param string $name Filter name
+     * @return $this
+     */
+    function useResource($name)
+    {
+        $this->useResource = $name;
         return $this;
     }
 }

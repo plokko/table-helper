@@ -79,7 +79,14 @@ interface TableBuilderInterface
     /**
      * Remove a filter by name
      * @param string $name Filter name
-     * @return $this
+     * @return TableBuilder
      */
     function removeFilter($name):TableBuilder;
+
+    /**
+     * Use a resource
+     * @param string $name resource class name
+     * @return $this
+     */
+    function useResource($name);
 }
