@@ -29,7 +29,9 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
         /** @var boolean */
         $autoSelect = true,
         /**@var string|null */
-        $useResource = null;
+        $useResource = null,
+        /**@var int Page size */
+        $pageSize=null;
 
     /**
      * TableHelper constructor.
@@ -116,6 +118,10 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
 
         if($this->useResource)
             $query->useResource($this->useResource);
+
+        if($this->pageSize!==null){
+            $query->setPagination($this->pageSize);
+        }
 
         return $query;
     }
@@ -253,6 +259,16 @@ class TableBuilder implements TableBuilderInterface, \Illuminate\Contracts\Suppo
     function useResource($name)
     {
         $this->useResource = $name;
+        return $this;
+    }
+
+    /**
+     * Set page size
+     * @param int|null|array $pagination
+     * @return $this
+     */
+    function setPageSize($size){
+        $this->pageSize = $size;
         return $this;
     }
 }

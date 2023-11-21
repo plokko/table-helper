@@ -89,4 +89,11 @@ interface TableBuilderInterface
      * @return $this
      */
     function useResource($name);
+
+    /**
+     * Set page size
+     * @param int|null|array $pagination
+     * @return $this
+     */
+    function setPageSize($size);
 }

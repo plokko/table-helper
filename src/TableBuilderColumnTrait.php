@@ -130,4 +130,10 @@ trait TableBuilderColumnTrait
         $this->parent->useResource($name);
         return $this;
     }
+    
+    function setPageSize($size);
+    {
+        $this->parent->setPageSize($size);
+        return $this;
+    }
 }

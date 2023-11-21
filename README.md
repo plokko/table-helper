@@ -54,6 +54,8 @@ $table
         ->virtual()
         ->columnView('<v-btn @click="">Test {{item.id}}</v-btn>')
 
+    ->setPageSize(30) /// Sets the number of elements per page
+    
     ->autoselect(true)/// Automatically applies it to the table even if in field scope
     ;
 
