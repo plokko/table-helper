@@ -131,7 +131,7 @@ trait TableBuilderColumnTrait
         return $this;
     }
     
-    function setPageSize($size);
+    function setPageSize($size)
     {
         $this->parent->setPageSize($size);
         return $this;
